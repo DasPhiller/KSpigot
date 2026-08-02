@@ -55,7 +55,11 @@ java {
 }
 
 signing {
-    sign(publishing.publications)
+    val hasSigningConfig = System.getenv("GPG_KEY_ID") != null
+        || project.findProperty("signing.keyId") != null
+    if (hasSigningConfig) {
+        sign(publishing.publications)
+    }
 }
 
 publishing {

@@ -1,10 +1,14 @@
 package net.axay.kspigot.structures
 
+import net.axay.kspigot.extensions.bukkit.spawnCleanEntity
 import net.axay.kspigot.extensions.geometry.SimpleLocation3D
+import net.axay.kspigot.particles.KSpigotParticle
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.data.BlockData
+import org.bukkit.entity.Entity
+import org.bukkit.entity.EntityType
 
 interface StructureData {
     fun createAt(loc: Location)
@@ -41,5 +45,24 @@ data class StructureDataBlock(
             it.type = material
             it.blockData = blockData
         }
+    }
+}
+
+data class StructureDataParticle(
+    val particle: KSpigotParticle,
+) : StructureData {
+    override fun createAt(loc: Location) {
+        particle.spawnAt(loc)
+    }
+}
+
+data class StructureDataEntity(
+    val entityType: EntityType,
+) : StructureData {
+    constructor(entity: Entity) : this(entity.type)
+
+    override fun createAt(loc: Location) {
+        // TODO: re-integrate NBT persistence once the nbtData extension is restored
+        loc.spawnCleanEntity(entityType)
     }
 }
